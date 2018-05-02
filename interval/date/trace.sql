@@ -1,0 +1,3 @@
+
+set autotrace  traceonly explain
+

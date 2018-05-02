@@ -1,0 +1,54 @@
+
+
+##########################
+## Subpart test -
+##########################
+
+Oracle 11.2.0.2
+
+See if using gather_table_stats(options => 'GATHER STALE') will update global table stats
+
+create_subpart.sql
+  create table with hash subpartitions
+  calls:
+    set_prefs.sql
+      set table stats prefs
+    get_prefs.sql
+      show prefs
+
+insert_subpart.sql
+  insert some data
+
+-- refer to Oracle Note 
+-- Incremental Statistics Gathering Not Working At Hash Sub-Partition Level (Doc ID 1390718.1)
+-- we have set granularity to ALL
+-- using 'AUTO' will not gather subpart stats
+exec dbms_stats.gather_table_stats(ownname => 'JKSTILL',tabname => 'HASH_SP_TEST', granularity => 'AUTO')
+
+list_stats.sql - aubparts will not have stats - num_rows will be set
+  show stats for part, subpart, stale and global for affected part/subpart
+ 
+-- now gather stats with out granularity specified - granularity => 'ALL' preference being honored
+-- subparts will have statistics
+exec dbms_stats.gather_table_stats(ownname => 'JKSTILL',tabname => 'HASH_SP_TEST')
+
+list_stats.sql - aubparts will now have stats 
+  show stats for part, subpart, stale and global for affected part/subpart
+
+insert_p2.sql
+  insert 3000 rows into partiton name_p2 to set stats stale
+
+flush_stats.sql
+  flush monitoring info so stats will be set stale
+
+list_stats.sql
+  show stats for part, subpart, stale and global
+
+-- doees not update stale subpartitions
+--exec dbms_stats.gather_schema_stats(ownname => 'JKSTILL',options => 'GATHER STALE')
+
+-- does update stale subpartitions
+exec dbms_stats.gather_table_stats(ownname => 'JKSTILL',tabname => 'HASH_SP_TEST')
+
+exec dbms_stats.gather_table_stats(ownname => 'JKSTILL',tabname => 'HASH_SP_TEST', partname => 'NAME_P2')
+

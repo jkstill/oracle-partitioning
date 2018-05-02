@@ -1,0 +1,5 @@
+
+Determine if by making an index partition unusable, the index segment
+for that partition of the index is dropped.
+
+

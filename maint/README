@@ -1,0 +1,40 @@
+
+create list partitioned table subpartitioned by hash
+
+Create local and global indexes
+
+Use the info from the docs to optimize adding partitions and avoid rebuilding global indexes
+
+http://docs.oracle.com/cd/E11882_01/server.112/e25523/part_admin002.htm#i1108213
+
+========================
+
+
+================= Partitioned Table Maintenance ==============
+
+== adding and splitting partitions.
+
+Following are some examples of adding and splitting partitions.
+
+If care is taken to follow the guidelines provided by Oracle, partitions may be split without
+any requirement to rebuild global indexes.
+See this documentation for details:
+
+Optimizing SPLIT PARTITION and SPLIT SUBPARTITION Operations
+http://docs.oracle.com/cd/E11882_01/server.112/e25523/part_admin002.htm#i1108213
+
+========== Scripts =============
+
+Running the scripts in the following order will produce the results shown later in this document.
+
+@create.sql
+@part_add.sql
+@part_add_custom.sql
+@insert.sql
+@select.sql
+@split.sql
+@select.sql
+@select2.sql
+@parts.sql
+
+
